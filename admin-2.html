@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Alliance Poll</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0a0a;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+            color: #e0e0e0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #141414;
+            border-radius: 8px;
+            border: 1px solid #262626;
+            overflow: hidden;
+        }
+
+        .header {
+            background: #141414;
+            border-bottom: 1px solid #262626;
+            padding: 24px 30px;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 1.5em;
+            margin-bottom: 4px;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .header p {
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 24px;
+            right: 90px;
+            padding: 6px 12px;
+            background: #ffffff;
+            color: #0a0a0a;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85em;
+        }
+
+        .logout-btn:hover {
+            opacity: 0.9;
+        }
+
+        .home-link {
+            position: absolute;
+            top: 24px;
+            right: 30px;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 6px 12px;
+            border: 1px solid #262626;
+            border-radius: 4px;
+            font-size: 0.85em;
+            transition: background 0.2s ease;
+        }
+
+        .home-link:hover {
+            background: #1a1a1a;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 60px auto;
+            padding: 40px;
+        }
+
+        .login-box {
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 8px;
+            border: 1px solid #262626;
+        }
+
+        .login-box h2 {
+            margin-bottom: 20px;
+            color: #ffffff;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #e0e0e0;
+            font-size: 0.9em;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #262626;
+            border-radius: 4px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+            background: #0a0a0a;
+            color: #e0e0e0;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #ffffff;
+        }
+
+        .form-group input::placeholder {
+            color: #555;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+            font-size: 0.9em;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-primary {
+            background: #ffffff;
+            color: #0a0a0a;
+            width: 100%;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #666;
+            color: white;
+        }
+
+        .credentials-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .credentials-box h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .credential-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .credential-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .credential-value {
+            font-family: 'Courier New', monospace;
+            background: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 6px;
+            color: #667eea;
+            font-size: 1.1em;
+        }
+
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+
+        .copy-btn:hover {
+            background: #5568d3;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            color: #0a0a0a;
+            padding: 20px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-bottom: 8px;
+            word-break: break-word;
+        }
+
+        .stat-label {
+            opacity: 0.6;
+            font-size: 0.8em;
+            line-height: 1.4;
+        }
+
+        .section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .voter-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #1a1a1a;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .voter-table th,
+        .voter-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #262626;
+            color: #e0e0e0;
+        }
+
+        .voter-table th {
+            background: #0a0a0a;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .voter-table tr:hover {
+            background: #202020;
+        }
+
+        .time-badge {
+            display: inline-block;
+            background: #262626;
+            color: #e0e0e0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            margin: 2px;
+            white-space: nowrap;
+        }
+
+        .heatmap-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        .heatmap {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            min-width: 600px;
+        }
+
+        .heatmap-cell {
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.75em;
+            border: 1px solid #262626;
+            transition: transform 0.2s ease;
+            background: #1a1a1a;
+        }
+
+        .heatmap-cell:hover {
+            transform: scale(1.05);
+            z-index: 1;
+        }
+
+        .heatmap-time {
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 0.85em;
+            white-space: nowrap;
+        }
+
+        .heatmap-votes {
+            font-size: 1.2em;
+            font-weight: 700;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .poll-info-box {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+        }
+
+        .poll-info-box h3 {
+            color: #004085;
+            margin-bottom: 10px;
+        }
+
+        .poll-link {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+            color: #667eea;
+            font-weight: 600;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Admin Panel</h1>
+            <p>Alliance Play Time Poll Management</p>
+            <button class="logout-btn" id="logoutBtn" style="display: none;" onclick="logout()">Logout</button>
+            <a href="index.html" class="home-link">Home</a>
+        </div>
+
+        <div class="content">
+            <div id="loadingScreen" class="loading">
+                <div class="loading-spinner"></div>
+                <p>Loading...</p>
+            </div>
+
+            <!-- Login Screen -->
+            <div class="login-container" id="loginScreen" style="display: none;">
+                <div class="login-box">
+                    <h2>Admin Login</h2>
+                    <div id="loginMessage"></div>
+                    <form onsubmit="login(event)">
+                        <div class="form-group">
+                            <label for="pollId">Poll ID:</label>
+                            <input type="text" id="pollId" maxlength="6" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Admin Password:</label>
+                            <input type="password" id="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Admin Content -->
+            <div id="adminContent" style="display: none;">
+                <div class="credentials-box" id="credentialsBox">
+                    <h3>⚠️ Important: Save These Credentials!</h3>
+                    <p style="color: #856404; margin-bottom: 15px;">Keep these credentials secure. You'll need them to access the admin panel.</p>
+                    <div class="credential-item">
+                        <span class="credential-label">Poll ID:</span>
+                        <div>
+                            <span class="credential-value" id="displayPollId"></span>
+                            <button class="copy-btn" onclick="copyCredential('pollId')">Copy</button>
+                        </div>
+                    </div>
+                    <div class="credential-item">
+                        <span class="credential-label">Admin Password:</span>
+                        <div>
+                            <span class="credential-value" id="displayPassword"></span>
+                            <button class="copy-btn" onclick="copyCredential('password')">Copy</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="poll-info-box">
+                    <h3 id="pollTitle">Alliance Poll</h3>
+                    <p id="pollDesc"></p>
+                    <div class="poll-link" id="pollLink"></div>
+                    <button class="copy-btn" onclick="copyPollLink()" style="margin-top: 10px;">Copy Poll Link</button>
+                </div>
+
+                <div id="adminMessage"></div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalVoters">0</div>
+                        <div class="stat-label">Total Voters</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalVotes">0</div>
+                        <div class="stat-label">Total Slot Votes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="mostPopularTime">--:--</div>
+                        <div class="stat-label" id="mostPopularLabel">Most Popular Time</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="secondPopularTime">--:--</div>
+                        <div class="stat-label" id="secondPopularLabel">2nd Most Popular</div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-success" onclick="exportData()">Export Data (JSON)</button>
+                    <button class="btn btn-info" onclick="exportCSV()">Export CSV</button>
+                    <button class="btn btn-danger" onclick="clearAllData()">Clear All Votes</button>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">🔥 Time Slot Heatmap</div>
+                    <div class="heatmap-container">
+                        <div class="heatmap" id="heatmap"></div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">👥 Voter Details</div>
+                    <div style="overflow-x: auto;">
+                        <table class="voter-table">
+                            <thead>
+                                <tr>
+                                    <th>Player Name</th>
+                                    <th>Time Slots Selected</th>
+                                    <th>Vote Time</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="voterTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getDatabase, ref, get, onValue, update, remove } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+        import { firebaseConfig } from './firebase-config.js';
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        window.firebaseDB = database;
+        window.firebaseRef = ref;
+        window.firebaseGet = get;
+        window.firebaseOnValue = onValue;
+        window.firebaseUpdate = update;
+        window.firebaseRemove = remove;
+
+        window.initializeApp();
+    </script>
+
+    <script>
+        let currentPollId = null;
+        let currentPassword = null;
+        let pollData = null;
+        let firstLogin = false;
+
+        // Generate 48 time slots
+        const timeSlots = [];
+        for (let i = 0; i < 48; i++) {
+            const startHour = Math.floor(i / 2);
+            const startMin = (i % 2) * 30;
+            const endHour = Math.floor((i + 1) / 2);
+            const endMin = ((i + 1) % 2) * 30;
+            
+            const startTime = `${String(startHour).padStart(2, '0')}:${String(startMin).padStart(2, '0')}`;
+            const endTime = `${String(endHour).padStart(2, '0')}:${String(endMin).padStart(2, '0')}`;
+            
+            timeSlots.push({
+                id: i + 1,
+                label: `${startTime} - ${endTime}`,
+                time: `${startTime}-${endTime}`
+            });
+        }
+
+        window.initializeApp = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const pollId = urlParams.get('poll');
+            const isFirstLogin = urlParams.get('first') === 'true';
+
+            if (pollId) {
+                currentPollId = pollId;
+                if (isFirstLogin) {
+                    firstLogin = true;
+                    autoLogin(pollId);
+                } else {
+                    showLoginScreen();
+                }
+            } else {
+                showLoginScreen();
+            }
+        }
+
+        function showLoginScreen() {
+            document.getElementById('loadingScreen').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'block';
+            document.getElementById('adminContent').style.display = 'none';
+        }
+
+        function showAdminContent() {
+            document.getElementById('loadingScreen').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('adminContent').style.display = 'block';
+            document.getElementById('logoutBtn').style.display = 'block';
+        }
+
+        async function autoLogin(pollId) {
+            try {
+                const pollRef = window.firebaseRef(window.firebaseDB, `polls/${pollId}`);
+                const snapshot = await window.firebaseGet(pollRef);
+
+                if (snapshot.exists()) {
+                    pollData = snapshot.val();
+                    currentPollId = pollId;
+                    currentPassword = pollData.adminPassword;
+                    
+                    // Listen for real-time updates
+                    window.firebaseOnValue(pollRef, (snapshot) => {
+                        if (snapshot.exists()) {
+                            pollData = snapshot.val();
+                            loadAdminData();
+                        }
+                    });
+
+                    showAdminContent();
+                    document.getElementById('credentialsBox').style.display = 'block';
+                    loadAdminData();
+                } else {
+                    showLoginScreen();
+                    showLoginMessage('Poll not found', 'error');
+                }
+            } catch (error) {
+                console.error('Error auto-logging in:', error);
+                showLoginScreen();
+            }
+        }
+
+        window.login = async function(event) {
+            event.preventDefault();
+            const pollId = document.getElementById('pollId').value.trim().toUpperCase();
+            const password = document.getElementById('password').value.trim();
+
+            try {
+                const pollRef = window.firebaseRef(window.firebaseDB, `polls/${pollId}`);
+                const snapshot = await window.firebaseGet(pollRef);
+
+                if (snapshot.exists()) {
+                    pollData = snapshot.val();
+                    
+                    if (pollData.adminPassword === password) {
+                        currentPollId = pollId;
+                        currentPassword = password;
+                        
+                        // Listen for real-time updates
+                        window.firebaseOnValue(pollRef, (snapshot) => {
+                            if (snapshot.exists()) {
+                                pollData = snapshot.val();
+                                loadAdminData();
+                            }
+                        });
+
+                        showAdminContent();
+                        document.getElementById('credentialsBox').style.display = 'none';
+                        loadAdminData();
+                    } else {
+                        showLoginMessage('Invalid password', 'error');
+                    }
+                } else {
+                    showLoginMessage('Poll not found', 'error');
+                }
+            } catch (error) {
+                console.error('Error logging in:', error);
+                showLoginMessage('Error logging in. Please try again.', 'error');
+            }
+        }
+
+        window.logout = function() {
+            window.location.href = window.location.pathname;
+        }
+
+        function loadAdminData() {
+            // Update poll info
+            document.getElementById('pollTitle').textContent = pollData.allianceName;
+            document.getElementById('pollDesc').textContent = pollData.description;
+            document.getElementById('displayPollId').textContent = currentPollId;
+            document.getElementById('displayPassword').textContent = pollData.adminPassword;
+            
+            const pollUrl = `${window.location.origin}${window.location.pathname}?poll=${currentPollId}`;
+            document.getElementById('pollLink').textContent = pollUrl;
+
+            // Update results visibility button
+            updateToggleButton(pollData.resultsVisible || false);
+
+            const votes = pollData.votes || {};
+            const totalVoters = Object.keys(votes).length;
+            let totalSlotVotes = 0;
+            const slotCounts = {};
+
+            timeSlots.forEach(slot => {
+                slotCounts[slot.id] = 0;
+            });
+
+            Object.values(votes).forEach(vote => {
+                if (vote.slots) {
+                    totalSlotVotes += vote.slots.length;
+                    vote.slots.forEach(slotId => {
+                        slotCounts[slotId] = (slotCounts[slotId] || 0) + 1;
+                    });
+                }
+            });
+
+            // Find top 2 most popular times
+            const sortedSlots = Object.entries(slotCounts)
+                .sort(([, a], [, b]) => b - a)
+                .filter(([, count]) => count > 0);
+
+            const mostPopularSlot = sortedSlots[0];
+            const secondPopularSlot = sortedSlots[1];
+
+            if (mostPopularSlot) {
+                const slotId = parseInt(mostPopularSlot[0]);
+                const voteCount = mostPopularSlot[1];
+                const slot = timeSlots[slotId - 1];
+                document.getElementById('mostPopularTime').textContent = slot.label;
+                document.getElementById('mostPopularLabel').textContent = `Most Popular (${voteCount} votes)`;
+            } else {
+                document.getElementById('mostPopularTime').textContent = '--:--';
+                document.getElementById('mostPopularLabel').textContent = 'Most Popular Time';
+            }
+
+            if (secondPopularSlot) {
+                const slotId = parseInt(secondPopularSlot[0]);
+                const voteCount = secondPopularSlot[1];
+                const slot = timeSlots[slotId - 1];
+                document.getElementById('secondPopularTime').textContent = slot.label;
+                document.getElementById('secondPopularLabel').textContent = `2nd Most Popular (${voteCount} votes)`;
+            } else {
+                document.getElementById('secondPopularTime').textContent = '--:--';
+                document.getElementById('secondPopularLabel').textContent = '2nd Most Popular';
+            }
+
+            document.getElementById('totalVoters').textContent = totalVoters;
+            document.getElementById('totalVotes').textContent = totalSlotVotes;
+
+            generateHeatmap(slotCounts, totalVoters);
+            generateVoterTable(votes);
+        }
+
+        function generateHeatmap(slotCounts, totalVoters) {
+            const heatmap = document.getElementById('heatmap');
+            const maxVotes = Math.max(...Object.values(slotCounts));
+
+            heatmap.innerHTML = timeSlots.map(slot => {
+                const votes = slotCounts[slot.id] || 0;
+                const intensity = maxVotes > 0 ? votes / maxVotes : 0;
+                const bgColor = intensity > 0 ? 
+                    `rgba(255, 255, 255, ${0.1 + intensity * 0.3})` : 
+                    '#1a1a1a';
+                const textColor = intensity > 0.5 ? '#ffffff' : '#888';
+
+                return `
+                    <div class="heatmap-cell" style="background: ${bgColor}; color: ${textColor};">
+                        <div class="heatmap-time">${slot.label}</div>
+                        <div class="heatmap-votes">${votes}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function generateVoterTable(votes) {
+            const tbody = document.getElementById('voterTableBody');
+
+            if (Object.keys(votes).length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #888;">No votes yet</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = Object.entries(votes).map(([name, data]) => {
+                if (!data.slots) return '';
+                
+                const selectedTimes = data.slots.map(slotId => {
+                    const slot = timeSlots[slotId - 1];
+                    return `<span class="time-badge">${slot.label}</span>`;
+                }).join(' ');
+
+                const voteTime = new Date(data.timestamp).toLocaleString();
+
+                return `
+                    <tr>
+                        <td><strong>${name}</strong></td>
+                        <td>${selectedTimes}</td>
+                        <td>${voteTime}</td>
+                        <td>
+                            <button class="btn btn-danger" style="padding: 6px 12px; font-size: 0.9em;" 
+                                    onclick="deleteVoter('${name}')">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        window.deleteVoter = async function(name) {
+            if (confirm(`Are you sure you want to delete ${name}'s vote?`)) {
+                try {
+                    const voteRef = window.firebaseRef(window.firebaseDB, `polls/${currentPollId}/votes/${name}`);
+                    await window.firebaseRemove(voteRef);
+                    showAdminMessage(`Deleted vote from ${name}`, 'success');
+                } catch (error) {
+                    console.error('Error deleting voter:', error);
+                    showAdminMessage('Error deleting vote', 'error');
+                }
+            }
+        }
+
+        window.toggleResultsVisibility = async function() {
+            const newVisibility = !pollData.resultsVisible;
+            
+            try {
+                const pollRef = window.firebaseRef(window.firebaseDB, `polls/${currentPollId}/resultsVisible`);
+                await window.firebaseUpdate(window.firebaseRef(window.firebaseDB, `polls/${currentPollId}`), {
+                    resultsVisible: newVisibility
+                });
+                
+                showAdminMessage(
+                    newVisibility ? 'Results are now visible to voters' : 'Results are now hidden from voters', 
+                    'success'
+                );
+                
+                updateToggleButton(newVisibility);
+            } catch (error) {
+                console.error('Error toggling results visibility:', error);
+                showAdminMessage('Error updating visibility', 'error');
+            }
+        }
+
+        function updateToggleButton(visible) {
+            const btn = document.getElementById('toggleResultsBtn');
+            if (visible) {
+                btn.textContent = 'Hide Results from Voters';
+                btn.className = 'btn btn-secondary';
+            } else {
+                btn.textContent = 'Show Results to Voters';
+                btn.className = 'btn btn-info';
+            }
+        }
+
+        window.clearAllData = async function() {
+            if (confirm('⚠️ WARNING: This will delete ALL votes. Are you absolutely sure?')) {
+                if (confirm('This action cannot be undone. Continue?')) {
+                    try {
+                        const votesRef = window.firebaseRef(window.firebaseDB, `polls/${currentPollId}/votes`);
+                        await window.firebaseRemove(votesRef);
+                        showAdminMessage('All votes have been cleared', 'success');
+                    } catch (error) {
+                        console.error('Error clearing votes:', error);
+                        showAdminMessage('Error clearing votes', 'error');
+                    }
+                }
+            }
+        }
+
+        window.exportData = function() {
+            const dataStr = JSON.stringify(pollData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `poll-${currentPollId}-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            showAdminMessage('Data exported successfully!', 'success');
+        }
+
+        window.exportCSV = function() {
+            const votes = pollData.votes || {};
+            
+            let csv = 'Player Name,Time Slots,Vote Timestamp\n';
+            Object.entries(votes).forEach(([name, data]) => {
+                if (data.slots) {
+                    const timeSlots = data.slots.join(';');
+                    csv += `"${name}","${timeSlots}","${data.timestamp}"\n`;
+                }
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `poll-${currentPollId}-${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+            showAdminMessage('CSV exported successfully!', 'success');
+        }
+
+        window.copyCredential = function(type) {
+            const text = type === 'pollId' ? currentPollId : pollData.adminPassword;
+            navigator.clipboard.writeText(text).then(() => {
+                showAdminMessage(`${type === 'pollId' ? 'Poll ID' : 'Password'} copied to clipboard!`, 'success');
+            });
+        }
+
+        window.copyPollLink = function() {
+            const link = document.getElementById('pollLink').textContent;
+            navigator.clipboard.writeText(link).then(() => {
+                showAdminMessage('Poll link copied to clipboard!', 'success');
+            });
+        }
+
+        function showAdminMessage(text, type) {
+            const messageDiv = document.getElementById('adminMessage');
+            messageDiv.className = `message ${type}`;
+            messageDiv.textContent = text;
+            setTimeout(() => {
+                messageDiv.className = '';
+                messageDiv.textContent = '';
+            }, 4000);
+        }
+
+        function showLoginMessage(text, type) {
+            const messageDiv = document.getElementById('loginMessage');
+            messageDiv.className = `message ${type}`;
+            messageDiv.textContent = text;
+            setTimeout(() => {
+                messageDiv.className = '';
+                messageDiv.textContent = '';
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
